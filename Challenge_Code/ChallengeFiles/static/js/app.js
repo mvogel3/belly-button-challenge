@@ -34,10 +34,10 @@ function buildBar(subjectId) {
   let otu_labels = valueData.otu_labels
   console.log(otu_labels)
 
-  let idSlice = otu_ids.slice(0, 10).map(r => 'OTU ${r}')
+  let idSlice = otu_ids.slice(0, 10).map(r => `OTU ${r}`).reverse()
   console.log(idSlice)
-  let samples = sample_values.slice(0, 10)
-  let labels = otu_labels.slice(1, 10)
+  let samples = sample_values.slice(0, 10).reverse()
+  let labels = otu_labels.slice(0, 10).reverse()
 
   var barchart = [
     {
@@ -48,14 +48,48 @@ function buildBar(subjectId) {
       orientation: 'h'
     }
   ];
+
+  let barLayout = {
+    title: "Top 10 Bacteria Cultures Found",
+    margin: { t: 30, l: 150 }
+  };
   
-  Plotly.newPlot('bar', barchart);
+  Plotly.newPlot('bar', barchart, barLayout);
   
 }
 
 function buildBubble(subjectId) {
   console.log("building bubble")
   console.log(subjectId)
+  let filteredSamples = myData.samples;
+  let filteredIds = filteredSamples.filter(result => result.id);
+  let valueData = filteredIds[0]
+  let otu_ids = valueData.otu_ids;
+  let sample_values = valueData.sample_values
+  let otu_labels = valueData.otu_labels
+
+  var trace1 = {
+    x: otu_ids,
+    y: sample_values,
+    text: otu_labels,
+    mode: 'markers',
+    marker: {
+      size: sample_values,
+      color: otu_ids
+    }
+  };
+  
+  var bubbleData = [trace1];
+  
+  var layout = {
+    title: 'Marker Size',
+    showlegend: false,
+    // height: 600,
+    // width: 600
+  };
+  
+  Plotly.newPlot('bubble', bubbleData, layout);
+  
 
 }
 
